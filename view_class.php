@@ -17,12 +17,21 @@ $classes_result = $stmt->get_result();
 
 // Fetch students for a specific class
 $students_result = null;
+$total_students = 0;
 if (isset($_GET['class_id'])) {
     $class_id = $_GET['class_id'];
     $stmt = $conn->prepare("SELECT s.id, s.name, s.email FROM students s JOIN class_students cs ON s.id = cs.student_id WHERE cs.class_id = ?");
     $stmt->bind_param("i", $class_id);
     $stmt->execute();
     $students_result = $stmt->get_result();
+
+    //total students
+    $count_stmt = $conn->prepare("SELECT COUNT(*) AS total_students FROM class_students WHERE class_id = ?");
+    $count_stmt->bind_param("i", $class_id);
+    $count_stmt->execute();
+    $count_result = $count_stmt->get_result();
+    $total_students = $count_result->fetch_assoc()['total_students'];
+
 }
 
 $conn->close();
@@ -65,6 +74,7 @@ $conn->close();
 
     <?php if (isset($students_result) && $students_result->num_rows > 0): ?>
         <h3>Students in the Selected Class</h3>
+        <p>Total Students: <strong><?php echo $total_students; ?></strong></p>
         <table>
             <thead>
                 <tr>
@@ -83,6 +93,7 @@ $conn->close();
         </table>
     <?php elseif (isset($_GET['class_id'])): ?>
         <p>No students found in this class.</p>
+        <p>Total Students: <strong>0</strong></p>
     <?php endif; ?>
     <br>
     <a href="dashboard.php">Back to Dashboard</a>

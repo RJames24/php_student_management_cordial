@@ -65,7 +65,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
+    <title>Profile Settings</title>
 </head>
 <body>
     <h2>Settings</h2>
@@ -92,6 +92,12 @@ $conn->close();
         <input type="submit" name="change_password" value="Change Password">
     </form>
     <br>
+    <h2>Subjects Settings</h2>
+    <ul>
+        <li><a href="edit_quiz.php">Edit Quiz</a></li>
+        <li><a href="edit_exams.php">Edit Exams</a></li>
+
+    </ul>
     <a href="dashboard.php">Back to Dashboard</a>
     <br>
     <a href="logout.php">Logout</a>
