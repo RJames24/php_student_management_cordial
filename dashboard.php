@@ -21,9 +21,9 @@ if (!isset($_SESSION['instructor_id'])) {
         <li><a href="add_student.php">Add Student to Class</a></li>
         <li><a href="grade_students.php">Grade Students</a></li>
         <li><a href="subjects.php">Subjects</a></li>
-        <li><a href="student_management.php">Student Management</a></li>
+        <li><a href="student_managment.php">Student Management</a></li>
         <li><a href="student_programs.php">Student Programs</a></li>
-        <li><a href="view_class.php">Class List</a></li>
+        <!-- <li><a href="view_class.php">Class List</a></li> -->
         <li><a href="grades.php">Grades</a></li>
         <li><a href="settings.php">Settings</a></li>
         <li><a href="logout.php">Logout</a></li>
