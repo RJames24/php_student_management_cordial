@@ -11,7 +11,8 @@ if (!isset($_SESSION['instructor_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instructor Dashboard</title>
+    <title>Dashboard/port.8080</title>
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
 </head>
 <body>
     <h2>Welcome, Instructor!</h2>
