@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $answer_c = $_POST['answer_c'];
     $correct_answer = $_POST['correct_answer'];
 
-    $stmt = $conn->prepare("INSERT INTO quiz_questions (subject_id, question_text, answer_a, answer_b, answer_c, correct_answer) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO exam_questions (subject_id, question_text, answer_a, answer_b, answer_c, correct_answer) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("isssss", $subject_id, $question_text, $answer_a, $answer_b, $answer_c, $correct_answer);
 
     if ($stmt->execute()) {
@@ -34,14 +34,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 
-// Fetch existing quiz questions
-$quiz_questions = [];
-$stmt = $conn->prepare("SELECT qq.*, s.subject_name FROM quiz_questions qq JOIN subjects s ON qq.subject_id = s.id WHERE s.instructor_id = ?");
+// Fetch existing exam questions
+$exam_questions = [];
+$stmt = $conn->prepare("SELECT eq.*, s.subject_name FROM exam_questions eq JOIN subjects s ON eq.subject_id = s.id WHERE s.instructor_id = ?");
 $stmt->bind_param("i", $_SESSION['instructor_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
-    $quiz_questions[] = $row;
+    $exam_questions[] = $row;
 }
 $stmt->close();
 
@@ -53,10 +53,10 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Quiz</title>
+    <title>Create Exam</title>
 </head>
 <body>
-    <h2>Add Quiz Question</h2>
+    <h2>Add Exam Question</h2>
     <?php
     if (isset($success)) echo "<p style='color: green;'>$success</p>";
     if (isset($error)) echo "<p style='color: red;'>$error</p>";
@@ -91,8 +91,8 @@ $conn->close();
         <input type="submit" value="Add Question">
     </form>
 
-    <h3>Existing Quiz Questions</h3>
-    <?php if (!empty($quiz_questions)): ?>
+    <h3>Existing Exam Questions</h3>
+    <?php if (!empty($exam_questions)): ?>
         <table border="1">
             <tr>
                 <th>ID</th>
@@ -104,7 +104,7 @@ $conn->close();
                 <th>Correct Answer</th>
                 <th>Action</th>
             </tr>
-            <?php foreach ($quiz_questions as $question): ?>
+            <?php foreach ($exam_questions as $question): ?>
                 <tr>
                     <td><?php echo $question['id']; ?></td>
                     <td><?php echo htmlspecialchars($question['subject_name']); ?></td>
@@ -113,12 +113,12 @@ $conn->close();
                     <td><?php echo htmlspecialchars($question['answer_b']); ?></td>
                     <td><?php echo htmlspecialchars($question['answer_c']); ?></td>
                     <td><?php echo $question['correct_answer']; ?></td>
-                    <td><a href="edit_quiz_question.php?id=<?php echo $question['id']; ?>">Edit</a></td>
+                    <td><a href="edit_exams.php?id=<?php echo $question['id']; ?>">Edit</a></td>
                 </tr>
             <?php endforeach; ?>
         </table>
     <?php else: ?>
-        <p>No quiz questions found.</p>
+        <p>No exam questions found.</p>
     <?php endif; ?>
 
     <br>

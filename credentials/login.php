@@ -1,8 +1,6 @@
 <?php
-//hello!
-
 session_start();
-require_once 'db_connect.php';
+require_once 'config/db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
@@ -82,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <button class="bg-white font-bold text-primary py-2 px-4 rounded-full w-1/2 hover:bg-gray-100 transition duration-300"><a href="sign.php">Sign Up</a></button>
             </div>  
 
-            <img src="Boy.png" class="w-32 absolute bottom-0 left-12">
+            <img src="resources/Boy.png" class="w-32 absolute bottom-0 left-12">
         </div>
 
         <div class="w-full md:w-2/3 p-8">
