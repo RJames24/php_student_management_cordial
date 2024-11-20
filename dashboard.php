@@ -50,7 +50,7 @@ if (!isset($_SESSION['instructor_id'])) {
          </button>
 
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="view_class.php">Class List</a>
+         <a class="text-decoration-none text-white" href="attendance.php">Attendance</a>
          </button><br>
         
          <button type="button" class="btn btn-primary">

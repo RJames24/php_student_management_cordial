@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db_connect.php';
+require_once 'config/db_connect.php';
 
 if (!isset($_SESSION['instructor_id'])) {
     header("Location: login.php");
@@ -91,13 +91,14 @@ $conn->close();
         <input type="password" id="confirm_password" name="confirm_password" required><br><br>
         <input type="submit" name="change_password" value="Change Password">
     </form>
-    <br>
+    <!-- <br>
     <h2>Subjects Settings</h2>
     <ul>
-        <li><a href="edit_quiz.php">Edit Quiz</a></li>
-        <li><a href="edit_exams.php">Edit Exams</a></li>
+        <li><a href="">Edit Quiz</a></li>
+        <li><a href="">Edit Exams</a></li>
 
-    </ul>
+    </ul> -->
+    <br>
     <a href="dashboard.php">Back to Dashboard</a>
     <br>
     <a href="logout.php">Logout</a>
