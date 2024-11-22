@@ -1,7 +1,8 @@
 <?php
 session_start();
+
 if (!isset($_SESSION['instructor_id'])) {
-    header("Location: login.php");
+    header("Location: ../account_pages/login.php");
     exit();
 }
 ?>
@@ -25,16 +26,16 @@ if (!isset($_SESSION['instructor_id'])) {
 <div class="d-flex align-items-center bg-primary 
 "style="height: 100vh ; width: 230px;" >
      <ul style="list-style: none;"> 
-         <button type="button" class="btn btn-primary">
+         <!-- <button type="button" class="btn btn-primary">
          <a class="text-decoration-none text-white" href="create_class.php">Create a New Class</a>
+         </button> -->
+
+         <button type="button" class="btn btn-primary">
+         <a class="text-decoration-none text-white" href="add_student/add_student.php">Add Student</a>
          </button>
 
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="add_student.php">Add Student</a>
-         </button>
-
-         <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="grade_students.php">Student Grades</a>
+         <a class="text-decoration-none text-white" href="grade_student/grade_students.php">Student Grades</a>
          </button>
 
          <button type="button" class="btn btn-primary">
@@ -42,27 +43,27 @@ if (!isset($_SESSION['instructor_id'])) {
          </button>
 
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="student_managment.php">Student Management</a>
+         <a class="text-decoration-none text-white" href="submenus/student_management.php">Student Management</a>
          </button>
 
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="student_programs.php">Student Programs</a>
+         <a class="text-decoration-none text-white" href="submenus/student_programs.php">Student Programs</a>
          </button>
 
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="attendance.php">Attendance</a>
+         <a class="text-decoration-none text-white" href="submenus/attendance.php">Attendance</a>
          </button><br>
         
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="grades.php">Grades</a>
+         <a class="text-decoration-none text-white" href="grades/grades.php">Grades</a>
          </button><br>
 
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="settings.php">Settings</a>
+         <a class="text-decoration-none text-white" href="submenus/settings.php">Settings</a>
          </button><br>
 
          <button type="button" class="btn btn-primary">
-         <a class="text-decoration-none text-white" href="logout.php">Logout</a>
+         <a class="text-decoration-none text-white" href="../account_pages/logout.php">Logout</a>
          </button>
     </ul> 
     <div class="position-relative">

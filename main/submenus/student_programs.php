@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['instructor_id'])) {
-    header("Location: login.php");
+    header("Location: ../../account_pages/login.php");
     exit();
 }
 ?>

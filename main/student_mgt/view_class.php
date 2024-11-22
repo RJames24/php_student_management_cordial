@@ -1,16 +1,16 @@
 <?php
 session_start();
-require_once 'config/db_connect.php';
+require_once '../../config/db_connect.php';
 
 if (!isset($_SESSION['instructor_id'])) {
-    header("Location: login.php");
+    header("Location: ../../account_pages/login.php");
     exit();
 }
 
 $conn = getDBConnection();
 
 // Fetch classes for the current instructor
-$stmt = $conn->prepare("SELECT id, class_name, section FROM classes WHERE instructor_id = ?");
+$stmt = $conn->prepare("SELECT class_id, CONCAT(course_name, ' ', year_level, '-', section) AS full_class_name, course_name, year_level, section FROM classes WHERE instructor_id = ?");
 $stmt->bind_param("i", $_SESSION['instructor_id']);
 $stmt->execute();
 $classes_result = $stmt->get_result();
@@ -20,7 +20,7 @@ $students_result = null;
 $total_students = 0;
 if (isset($_GET['class_id'])) {
     $class_id = $_GET['class_id'];
-    $stmt = $conn->prepare("SELECT s.id, s.name, s.email FROM students s JOIN class_students cs ON s.id = cs.student_id WHERE cs.class_id = ?");
+    $stmt = $conn->prepare("SELECT s.student_id, CONCAT(s.fname, ' ', s.mname, ' ', s.lname) AS full_name, s.email FROM students s JOIN class_students cs ON s.student_id = cs.student_id WHERE cs.class_id = ?");
     $stmt->bind_param("i", $class_id);
     $stmt->execute();
     $students_result = $stmt->get_result();
@@ -31,7 +31,6 @@ if (isset($_GET['class_id'])) {
     $count_stmt->execute();
     $count_result = $count_stmt->get_result();
     $total_students = $count_result->fetch_assoc()['total_students'];
-
 }
 
 $conn->close();
@@ -65,8 +64,8 @@ $conn->close();
         <select id="class_id" name="class_id" onchange="this.form.submit()">
             <option value="">Select a class</option>
             <?php while ($class = $classes_result->fetch_assoc()): ?>
-                <option value="<?php echo $class['id']; ?>" <?php echo (isset($_GET['class_id']) && $_GET['class_id'] == $class['id']) ? 'selected' : ''; ?>>
-                    <?php echo htmlspecialchars($class['class_name'] . ' - ' . $class['section']); ?>
+                <option value="<?php echo $class['class_id']; ?>" <?php echo (isset($_GET['class_id']) && $_GET['class_id'] == $class['class_id']) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($class['full_class_name']); ?>
                 </option>
             <?php endwhile; ?>
         </select>
@@ -85,7 +84,7 @@ $conn->close();
             <tbody>
                 <?php while ($student = $students_result->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($student['name']); ?></td>
+                        <td><?php echo htmlspecialchars($student['full_name']); ?></td>
                         <td><?php echo htmlspecialchars($student['email']); ?></td>
                     </tr>
                 <?php endwhile; ?>
@@ -96,6 +95,6 @@ $conn->close();
         <p>Total Students: <strong>0</strong></p>
     <?php endif; ?>
     <br>
-    <a href="dashboard.php">Back to Dashboard</a>
+    <a href="../submenus/student_management.php">Back to Student Management</a>
 </body>
 </html>

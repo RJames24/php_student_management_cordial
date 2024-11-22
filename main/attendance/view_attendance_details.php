@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/db_connect.php';
+require_once '../../config/db_connect.php';
 
 if (!isset($_SESSION['instructor_id']) || !isset($_GET['class_id'])) {
     header("Location: attendance.php");
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_password'])) 
     $password = $_POST['password'];
 
     // Verify instructor's password
-    $stmt = $conn->prepare("SELECT password FROM instructors WHERE id = ?");
+    $stmt = $conn->prepare("SELECT password FROM instructors WHERE instructor_id = ?");
     $stmt->bind_param("i", $_SESSION['instructor_id']);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -56,11 +56,11 @@ $attendance_details = [];
 if (isset($_GET['view_date'])) {
     $view_date = $_GET['view_date'];
     $stmt = $conn->prepare("
-        SELECT s.name, a.status
+        SELECT CONCAT(s.fname, ' ', s.mname, ' ', s.lname) AS full_name, a.status
         FROM attendance a
-        JOIN students s ON a.student_id = s.id
+        JOIN students s ON a.student_id = s.student_id
         WHERE a.class_id = ? AND a.date = ?
-        ORDER BY s.name
+        ORDER BY s.lname, s.fname
     ");
     $stmt->bind_param("is", $class_id, $view_date);
     $stmt->execute();
@@ -181,7 +181,7 @@ $conn->close();
             <tbody>
                 <?php foreach ($attendance_details as $detail): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($detail['name']); ?></td>
+                        <td><?php echo htmlspecialchars($detail['full_name']); ?></td>
                         <td><?php echo ucfirst($detail['status']); ?></td>
                     </tr>
                 <?php endforeach; ?>
@@ -189,6 +189,6 @@ $conn->close();
         </table>
     <?php endif; ?>
 
-    <a href="attendance.php">Back to Attendance Management</a>
+    <a href="../submenus/attendance.php">Back to Attendance Management</a>
 </body>
 </html>

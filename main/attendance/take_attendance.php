@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/db_connect.php';
+require_once '../../config/db_connect.php';
 
 if (!isset($_SESSION['instructor_id']) || !isset($_GET['class_id'])) {
     header("Location: attendance.php");
@@ -12,7 +12,14 @@ $class_id = $_GET['class_id'];
 $current_date = date('Y-m-d');
 
 // Fetch students for the selected class
-$stmt = $conn->prepare("SELECT s.id, s.name, s.email, s.absences, s.lates FROM students s JOIN class_students cs ON s.id = cs.student_id WHERE cs.class_id = ?");
+$stmt = $conn->prepare("
+    SELECT s.student_id, CONCAT(s.fname, ' ', s.mname, ' ', s.lname) AS full_name, s.email,
+           (SELECT COUNT(*) FROM attendance WHERE student_id = s.student_id AND status = 'absent') AS absences,
+           (SELECT COUNT(*) FROM attendance WHERE student_id = s.student_id AND status = 'late') AS lates
+    FROM students s 
+    JOIN class_students cs ON s.student_id = cs.student_id 
+    WHERE cs.class_id = ?
+");
 $stmt->bind_param("i", $class_id);
 $stmt->execute();
 $students_result = $stmt->get_result();
@@ -30,13 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_attendance']))
             $stmt = $conn->prepare("INSERT INTO attendance (class_id, student_id, date, status) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE status = ?");
             $stmt->bind_param("iisss", $class_id, $student_id, $current_date, $status, $status);
             $stmt->execute();
-
-            // Update student's absence and late counters
-            if ($status === 'absent') {
-                $conn->query("UPDATE students SET absences = absences + 1 WHERE id = $student_id");
-            } elseif ($status === 'late') {
-                $conn->query("UPDATE students SET lates = lates + 1 WHERE id = $student_id");
-            }
         }
         $success_message = "Attendance submitted successfully.";
     } else {
@@ -135,14 +135,14 @@ $conn->close();
             <tbody>
                 <?php while ($student = $students_result->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($student['name']); ?></td>
+                        <td><?php echo htmlspecialchars($student['full_name']); ?></td>
                         <td><?php echo htmlspecialchars($student['email']); ?></td>
                         <td><?php echo $student['absences']; ?></td>
                         <td><?php echo $student['lates']; ?></td>
                         <td>
-                            <label><input type="radio" name="attendance[<?php echo $student['id']; ?>]" value="present" <?php echo (isset($attendance[$student['id']]) && $attendance[$student['id']] == 'present') ? 'checked' : ''; ?> <?php echo $is_locked ? 'disabled' : ''; ?>> Present</label>
-                            <label><input type="radio" name="attendance[<?php echo $student['id']; ?>]" value="late" <?php echo (isset($attendance[$student['id']]) && $attendance[$student['id']] == 'late') ? 'checked' : ''; ?> <?php echo $is_locked ? 'disabled' : ''; ?>> Late</label>
-                            <label><input type="radio" name="attendance[<?php echo $student['id']; ?>]" value="absent" <?php echo (isset($attendance[$student['id']]) && $attendance[$student['id']] == 'absent') ? 'checked' : ''; ?> <?php echo $is_locked ? 'disabled' : ''; ?>> Absent</label>
+                            <label><input type="radio" name="attendance[<?php echo $student['student_id']; ?>]" value="present" <?php echo (isset($attendance[$student['student_id']]) && $attendance[$student['student_id']] == 'present') ? 'checked' : ''; ?> <?php echo $is_locked ? 'disabled' : ''; ?>> Present</label>
+                            <label><input type="radio" name="attendance[<?php echo $student['student_id']; ?>]" value="late" <?php echo (isset($attendance[$student['student_id']]) && $attendance[$student['student_id']] == 'late') ? 'checked' : ''; ?> <?php echo $is_locked ? 'disabled' : ''; ?>> Late</label>
+                            <label><input type="radio" name="attendance[<?php echo $student['student_id']; ?>]" value="absent" <?php echo (isset($attendance[$student['student_id']]) && $attendance[$student['student_id']] == 'absent') ? 'checked' : ''; ?> <?php echo $is_locked ? 'disabled' : ''; ?>> Absent</label>
                         </td>
                     </tr>
                 <?php endwhile; ?>
@@ -151,6 +151,6 @@ $conn->close();
         <input type="submit" name="submit_attendance" value="Submit Attendance" <?php echo $is_locked ? 'disabled' : ''; ?>>
     </form>
 
-    <a href="attendance.php">Back to Attendance Management</a>
+    <a href="../submenus/attendance.php">Back to Attendance Management</a>
 </body>
 </html>

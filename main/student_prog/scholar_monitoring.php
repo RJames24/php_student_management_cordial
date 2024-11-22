@@ -1,9 +1,9 @@
 <?php
 session_start();
-require_once 'config/db_connect.php';
+require_once '../config/db_connect.php';
 
 if (!isset($_SESSION['instructor_id'])) {
-    header("Location: login.php");
+    header("Location: ../../login.php");
     exit();
 }
 

@@ -1,21 +1,35 @@
 <?php
 session_start();
-require_once 'config/db_connect.php';
+require_once '../../config/db_connect.php';
 
 if (!isset($_SESSION['instructor_id'])) {
-    header("Location: login.php");
+    header("Location: ../../account_pages/login.php");
     exit();
 }
 
 $conn = getDBConnection();
 
+// // Fetch classes for the current instructor
+// $stmt = $conn->prepare("SELECT class_id, course_name, section FROM classes WHERE instructor_id = ?");
+// $stmt->bind_param("i", $_SESSION['instructor_id']);
+// $stmt->execute();
+// $classes_result = $stmt->get_result();
+
+// $conn->close();
 // Fetch classes for the current instructor
-$stmt = $conn->prepare("SELECT id, class_name, section FROM classes WHERE instructor_id = ?");
+$stmt = $conn->prepare("
+    SELECT 
+        class_id, 
+        CONCAT(course_name, ' ', year_level, '-', section) AS full_class_name, 
+        course_name,
+        year_level,
+        section 
+    FROM classes 
+    WHERE instructor_id = ?
+");
 $stmt->bind_param("i", $_SESSION['instructor_id']);
 $stmt->execute();
 $classes_result = $stmt->get_result();
-
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -61,8 +75,8 @@ $conn->close();
         <select id="class_id" name="class_id">
             <option value="">Select a class</option>
             <?php while ($class = $classes_result->fetch_assoc()): ?>
-                <option value="<?php echo $class['id']; ?>">
-                    <?php echo htmlspecialchars($class['class_name'] . ' - ' . $class['section']); ?>
+                <option value="<?php echo $class['class_id']; ?>" <?php echo (isset($_GET['class_id']) && $_GET['class_id'] == $class['class_id']) ? 'selected' : ''; ?>>
+                    <?php echo htmlspecialchars($class['full_class_name']); ?>
                 </option>
             <?php endwhile; ?>
         </select>
@@ -70,14 +84,14 @@ $conn->close();
 
     <div class="menu">
         <ul>
-            <a href="#" onclick="navigateTo('take_attendance.php')">Take Attendance</a>
+            <a href="#" onclick="navigateTo('../attendance/take_attendance.php')">Take Attendance</a>
             <br>
-            <a href="#" onclick="navigateTo('view_attendance_details.php')">View Attendance Records</a>
+            <a href="#" onclick="navigateTo('../attendance/view_attendance_details.php')">View Attendance Records</a>
         </ul>
         
     </div>
 
-    <a href="dashboard.php">Back to Dashboard</a>
+    <a href="../dashboard.php">Back to Dashboard</a>
 
 <!-- simple js echo script -->
     <script>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['instructor_id'])) {
-    header("Location: login.php");
+    header("Location: ../../aacount_pages/login.php");
     exit();
 }
 ?>
@@ -16,11 +16,11 @@ if (!isset($_SESSION['instructor_id'])) {
 <body>
     <h2>Student Management</h2>
     <ul>
-        <li><a href="view_class.php">Class List</a></li>
+        <li><a href="../student_mgt/view_class.php">Class List</a></li>
         <li><a href="">View Groups</a></li>
         <li><a href="">Recitation</a></li>
         <li><a href="">Student Performance</a></li>
     </ul>
-    <a href="dashboard.php">Back to Dashboard</a>
+    <a href="../dashboard.php">Back to Dashboard</a>
 </body>
 </html>
