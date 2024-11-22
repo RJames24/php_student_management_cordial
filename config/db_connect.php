@@ -11,8 +11,6 @@ function getDBConnection() {
 
 // Test the connection
 $testConn = getDBConnection();
-
- #   echo "Database connection successful";
-
+    echo "Test : Database connection is successful!";
 $testConn->close();
 ?>
